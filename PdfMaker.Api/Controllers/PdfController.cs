@@ -34,7 +34,7 @@ namespace PdfMaker.Api.Controllers
                 }
             }
 
-            var stream = CreatePdf.CreatePdfFile(text, streamImages);
+            var stream = new CreatePdf().CreatePdfFile(text, streamImages);
 
             return File(stream, "application/octet-stream", "ConfigatorSettings.pdf");
         }

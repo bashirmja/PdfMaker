@@ -1,4 +1,5 @@
 ﻿using MigraDocCore.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes;
+using PdfSharpCore;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 using SixLabors.ImageSharp.PixelFormats;
@@ -8,14 +9,18 @@ namespace PdfMaker.Service
 {
     public class CreatePdf
     {
-        public static MemoryStream CreatePdfFile(string text, List<MemoryStream> pics)
+        public MemoryStream CreatePdfFile(string text, List<MemoryStream> pics)
         {
             PdfDocument document = CreateDocument();
             var page = document.AddPage();
+            page.Orientation = PageOrientation.Landscape;
             var gfx = XGraphics.FromPdfPage(page);
 
 
-            if (pics.Any()) AddPicturesToPage(pics.First(), gfx);
+            for (int i = 0; i < pics.Count; i++)
+            {
+                AddPicturesToPage(pics[i], gfx, (i + 1) * 150);
+            }
 
             AddTextToPage(text, gfx);
 
@@ -23,14 +28,14 @@ namespace PdfMaker.Service
             return SaveNewdocument(document);
         }
 
-        private static MemoryStream SaveNewdocument(PdfDocument document)
+        private MemoryStream SaveNewdocument(PdfDocument document)
         {
             var stream = new MemoryStream();
             document.Save(stream, false);
             return stream;
         }
 
-        private static PdfDocument CreateDocument()
+        private PdfDocument CreateDocument()
         {
             var document = new PdfDocument();
             document.Info.Title = "PDFsharp Demo";
@@ -39,17 +44,17 @@ namespace PdfMaker.Service
             return document;
         }
 
-        private static void AddTextToPage(string test, XGraphics gfx)
+        private void AddTextToPage(string test, XGraphics gfx)
         {
             var font = new XFont("Verdana", 20, XFontStyle.Bold);
             gfx.DrawString(test, font, XBrushes.Black, new XRect(0, 0, 500, 1000), XStringFormats.Center);
         }
 
-        private static void AddPicturesToPage(MemoryStream pic, XGraphics gfx)
+        private void AddPicturesToPage(MemoryStream pic, XGraphics gfx, int left)
         {
             ImageSource.ImageSourceImpl = new PdfSharpCore.Utils.ImageSharpImageSource<Rgba32>();
-            var image = XImage.FromImageSource(ImageSource.FromStream("", () => pic));
-            gfx.DrawImage(image, 0, 0, 100, 100);
+            var image = XImage.FromImageSource(ImageSource.FromStream(Guid.NewGuid().ToString("n").Substring(0, 8), () => pic));
+            gfx.DrawImage(image, left, 100, 100, 100);
         }
     }
 }
