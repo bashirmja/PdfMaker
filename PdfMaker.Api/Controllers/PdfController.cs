@@ -14,10 +14,13 @@ namespace PdfMaker.Api.Controllers
         }
 
         [HttpPost(Name = "CreatePdf")]
-        public IActionResult Post()
+        public IActionResult Post(IFormFile[] files)
         {
             _logger.Log(LogLevel.Information, "==>action called!");
-
+            foreach (var item in files)
+            {
+                _logger.LogInformation("file uploaded : " + item.FileName);
+            }
             var stream = CreatePdf.CreatePdfFile("Hello, World!");
 
             return File(stream, "application/octet-stream", "ConfigatorSettings.pdf");
