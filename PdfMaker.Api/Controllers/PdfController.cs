@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PdfMaker.Service;
 
 namespace PdfMaker.Api.Controllers
 {
@@ -13,10 +14,13 @@ namespace PdfMaker.Api.Controllers
         }
 
         [HttpPost(Name = "CreatePdf")]
-        public void Post()
+        public IActionResult Post()
         {
-            _logger.Log(LogLevel.Information, "--action called!");
+            _logger.Log(LogLevel.Information, "==>action called!");
 
+            var stream = CreatePdf.CreatePdfFile("Hello, World!");
+
+            return File(stream, "application/octet-stream", "ConfigatorSettings.pdf");
         }
     }
 }
