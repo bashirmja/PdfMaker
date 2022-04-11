@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfMaker.Api", "PdfMaker.Api\PdfMaker.Api.csproj", "{E2061BBE-8595-40AE-9E8E-6BA4F1DC95E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfMaker.Api", "PdfMaker.Api\PdfMaker.Api.csproj", "{E2061BBE-8595-40AE-9E8E-6BA4F1DC95E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfMaker.Service", "PdfMaker.Service\PdfMaker.Service.csproj", "{08BBE118-B972-454B-B692-640D5ECFB766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{E2061BBE-8595-40AE-9E8E-6BA4F1DC95E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2061BBE-8595-40AE-9E8E-6BA4F1DC95E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2061BBE-8595-40AE-9E8E-6BA4F1DC95E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08BBE118-B972-454B-B692-640D5ECFB766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08BBE118-B972-454B-B692-640D5ECFB766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08BBE118-B972-454B-B692-640D5ECFB766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08BBE118-B972-454B-B692-640D5ECFB766}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
