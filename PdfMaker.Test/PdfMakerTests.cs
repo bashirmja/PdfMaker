@@ -28,7 +28,7 @@ namespace PdfMaker.Test
             multipartFormContent.Add(greenFile, name: "TopView", fileName: "green.png");
 
 
-            multipartFormContent.Add(new StringContent("Hello!"), name: "Title");
+            multipartFormContent.Add(new StringContent(DateTime.Now.ToString()), name: "Title");
             multipartFormContent.Add(new StringContent("10"), name: "TotalFloors");
 
 
