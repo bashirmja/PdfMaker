@@ -9,6 +9,7 @@ namespace PdfMaker.Test
 {
     public class PdfMakerTests
     {
+        private readonly Uri BaseAddress = new Uri("https://localhost:7131");
 
         [Fact]
         public async Task TestPostAsync()
@@ -21,7 +22,7 @@ namespace PdfMaker.Test
             var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
 
             var client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:7131");
+            client.BaseAddress = BaseAddress;
             var httpResponse = await client.PostAsync("/testpost", httpContent);
 
             string resultContent = await httpResponse.Content.ReadAsStringAsync();
@@ -34,15 +35,10 @@ namespace PdfMaker.Test
         public async Task TestGetAsync()
         {
             using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:7131");
+            client.BaseAddress = BaseAddress;
             var result = await client.GetAsync("/testget");
             string resultContent = await result.Content.ReadAsStringAsync();
             Assert.Equal("GetOK", resultContent);
-
-            //var client = new HttpClient();
-            //var response = await client.GetAsync("https://localhost:7131/testget");
-            //var responseString = await response.Content.ReadAsStringAsync();
-            //Assert.Equal("GetOK", responseString);
         }
     }
 }
