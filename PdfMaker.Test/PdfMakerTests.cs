@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,6 +12,38 @@ namespace PdfMaker.Test
     public class PdfMakerTests
     {
         private readonly Uri BaseAddress = new Uri("https://localhost:7131");
+
+        [Fact]
+        public async Task CreatePDFAsync()
+        {
+            using var multipartFormContent = new MultipartFormDataContent();
+
+            var blueFile = new StreamContent(File.OpenRead("./files/blue.png"));
+            blueFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            multipartFormContent.Add(blueFile, name: "FrontView", fileName: "blue.png");
+
+            var redFile = new StreamContent(File.OpenRead("./files/red.png"));
+            redFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            multipartFormContent.Add(redFile, name: "LeftView", fileName: "red.png");
+
+            var greenFile = new StreamContent(File.OpenRead("./files/green.png"));
+            greenFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            multipartFormContent.Add(greenFile, name: "TopView", fileName: "green.png");
+
+
+            multipartFormContent.Add(new StringContent("Hello!"), name: "Title");
+            multipartFormContent.Add(new StringContent("10"), name: "TotalFloors");
+
+
+            var client = new HttpClient();
+            client.BaseAddress = BaseAddress;
+            var httpResponse = await client.PostAsync("/createpdf", multipartFormContent);
+
+            string resultContent = await httpResponse.Content.ReadAsStringAsync();
+            Assert.Equal("Hello", resultContent);
+        }
+
+
 
         [Fact]
         public async Task TestPostAsync()
