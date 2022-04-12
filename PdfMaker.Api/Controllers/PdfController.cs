@@ -11,16 +11,13 @@ namespace PdfMaker.Api.Controllers
         public PdfController(ILogger<PdfController> logger)
         {
             _logger = logger;
+            _logger.LogInformation("==>Request hits here");
         }
 
         [HttpPost(Name = "CreatePdf")]
         public IActionResult Post(IFormFile[] uploadedfiles, string text)
         {
             _logger.Log(LogLevel.Information, "==>action called!");
-            foreach (var item in uploadedfiles)
-            {
-                _logger.LogInformation("file uploaded : " + item.FileName);
-            }
 
             var streamImages = new List<MemoryStream>();
             foreach (var file in uploadedfiles)
@@ -35,7 +32,6 @@ namespace PdfMaker.Api.Controllers
             }
 
             var stream = new CreatePdf().CreatePdfFile(text, streamImages);
-
             return File(stream, "application/octet-stream", "ConfigatorSettings.pdf");
         }
     }
