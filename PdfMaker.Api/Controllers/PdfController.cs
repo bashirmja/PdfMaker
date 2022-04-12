@@ -34,5 +34,12 @@ namespace PdfMaker.Api.Controllers
             var stream = new CreatePdf().CreatePdfFile(text, streamImages);
             return File(stream, "application/octet-stream", "ConfigatorSettings.pdf");
         }
+
+        [HttpGet(Name = "GetPdf")]
+        public IActionResult Get()
+        {
+            _logger.Log(LogLevel.Information, "==>Get works");
+            return Ok("OK");
+        }
     }
 }
