@@ -9,7 +9,7 @@ namespace PdfMaker.Service
 {
     public class CreatePdf
     {
-        public MemoryStream CreatePdfFile(string text, List<MemoryStream> pics)
+        public string CreatePdfFile(string text, List<MemoryStream> pics)
         {
             PdfDocument document = CreateDocument();
             var page = document.AddPage();
@@ -28,11 +28,15 @@ namespace PdfMaker.Service
             return SaveNewdocument(document);
         }
 
-        private MemoryStream SaveNewdocument(PdfDocument document)
+        private string SaveNewdocument(PdfDocument document)
         {
-            var stream = new MemoryStream();
-            document.Save(stream, false);
-            return stream;
+            var fileId = Guid.NewGuid();
+            var folderName = @".\pdfs";
+            var filepath = $@"{folderName}\{fileId}.pdf";
+
+            Directory.CreateDirectory(folderName);
+            document.Save(filepath);
+            return fileId.ToString();
         }
 
         private PdfDocument CreateDocument()
