@@ -4,20 +4,19 @@ using PdfMaker.Service;
 namespace PdfMaker.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class PdfController : ControllerBase
     {
         private readonly ILogger<PdfController> _logger;
         public PdfController(ILogger<PdfController> logger)
         {
             _logger = logger;
-            _logger.LogInformation("==>Request hits here");
+            _logger.LogInformation("==>Request hits constractor!");
         }
 
-        [HttpPost(Name = "CreatePdf")]
-        public IActionResult Post(IFormFile[] uploadedfiles, string text)
+        [HttpPost("createpdf", Name = "CreatePdf")]
+        public IActionResult CreatePost(IFormFile[] uploadedfiles, ConfigModel model)
         {
-            _logger.Log(LogLevel.Information, "==>action called!");
+            _logger.Log(LogLevel.Information, "==>CreatePdf called!");
 
             var streamImages = new List<MemoryStream>();
             foreach (var file in uploadedfiles)
@@ -31,15 +30,23 @@ namespace PdfMaker.Api.Controllers
                 }
             }
 
-            var stream = new CreatePdf().CreatePdfFile(text, streamImages);
+            var stream = new CreatePdf().CreatePdfFile(model.Title ?? "", streamImages);
             return File(stream, "application/octet-stream", "ConfigatorSettings.pdf");
         }
 
-        [HttpGet(Name = "GetPdf")]
-        public IActionResult Get()
+        [HttpGet("TestGet", Name = "TestGet")]
+        public IActionResult TestGet()
         {
-            _logger.Log(LogLevel.Information, "==>Get works");
-            return Ok("OK");
+            _logger.Log(LogLevel.Information, "==>TestGet works");
+            return Ok("GetOK");
         }
+
+        [HttpPost("testpost", Name = "TestPost")]
+        public IActionResult TestPost(ConfigModel model)
+        {
+            _logger.Log(LogLevel.Information, $"==>TestPost works {model.Title}");
+            return Ok(model.Title);
+        }
+
     }
 }
