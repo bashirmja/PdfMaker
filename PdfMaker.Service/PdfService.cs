@@ -8,7 +8,11 @@ namespace PdfMaker.Service
 {
     public class PdfService
     {
-        private readonly DocumentService _documentService = new DocumentService();
+        private readonly DocumentService _documentService;
+        public PdfService(DocumentService documentService)
+        {
+            _documentService = documentService;
+        }
 
         public async Task<PdfDto?> GetPdfAsync(string id)
         {
@@ -39,7 +43,7 @@ namespace PdfMaker.Service
             _documentService.AddPicturesToPage(model.LeftView, gfx, 300);
             _documentService.AddPicturesToPage(model.TopView, gfx, 500);
 
-            _documentService.AddTextToPage(model.ProductTitle ?? "", gfx);
+            _documentService.AddTextToPage(model.ProductTitle, gfx);
 
             return SaveDocument(document);
         }

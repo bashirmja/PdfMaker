@@ -1,9 +1,13 @@
+using PdfMaker.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<PdfService>();
+builder.Services.AddScoped<DocumentService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

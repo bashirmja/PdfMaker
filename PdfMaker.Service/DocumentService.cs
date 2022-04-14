@@ -7,7 +7,7 @@ namespace PdfMaker.Service
 {
     public class DocumentService
     {
-        public void AddTextToPage(string test, XGraphics gfx)
+        public void AddTextToPage(string? test, XGraphics gfx)
         {
             var font = new XFont("Verdana", 20, XFontStyle.Bold);
             gfx.DrawString(test, font, XBrushes.Black, new XRect(0, 0, 500, 1000), XStringFormats.Center);

@@ -8,10 +8,14 @@ namespace PdfMaker.Api.Controllers
     public class PdfController : ControllerBase
     {
         private readonly ILogger<PdfController> _logger;
-        public PdfController(ILogger<PdfController> logger)
+        private readonly PdfService _pdfService;
+
+        public PdfController(ILogger<PdfController> logger, PdfService pdfService)
         {
+            logger.LogInformation("==> PdfController called!");
+
             _logger = logger;
-            _logger.LogInformation("==> Request hits pdf constractor!");
+            _pdfService = pdfService;
         }
 
         [HttpPost("", Name = "CreatePdf")]
@@ -20,9 +24,7 @@ namespace PdfMaker.Api.Controllers
             _logger.Log(LogLevel.Information, "==> CreatePdf called!");
 
 
-            var fileId = new PdfService().CreatePdf(model);
-
-            _logger.Log(LogLevel.Information, $"==> Created fileId:{fileId}");
+            var fileId = _pdfService.CreatePdf(model);
             return Ok(fileId);
         }
 
@@ -31,16 +33,13 @@ namespace PdfMaker.Api.Controllers
         {
             _logger.Log(LogLevel.Information, "==> GetPdf called!");
 
-            var file = await new PdfService().GetPdfAsync(id);
-
-            if (file != null)
+            var pdf = await _pdfService.GetPdfAsync(id);
+            if (pdf != null)
             {
-                _logger.Log(LogLevel.Information, $"==> file {id} exist");
-                return File(file.FileContent, file.FileContentType, Path.GetFileName(file.FilePath));
+                return File(pdf.FileContent, pdf.FileContentType, Path.GetFileName(pdf.FilePath));
             }
             else
             {
-                _logger.Log(LogLevel.Information, $"==> file {id} not found");
                 return NotFound();
             }
         }
