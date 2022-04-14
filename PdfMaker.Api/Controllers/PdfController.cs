@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using PdfMaker.Service;
 
 namespace PdfMaker.Api.Controllers
@@ -12,35 +11,38 @@ namespace PdfMaker.Api.Controllers
         public PdfController(ILogger<PdfController> logger)
         {
             _logger = logger;
-            _logger.LogInformation("==> Request hits constractor!");
+            _logger.LogInformation("==> Request hits pdf constractor!");
         }
 
         [HttpPost("", Name = "CreatePdf")]
-        public IActionResult CreatePdf([FromForm] ConfigSettings model)
+        public IActionResult CreatePdf([FromForm] ConfigModel model)
         {
             _logger.Log(LogLevel.Information, "==> CreatePdf called!");
 
 
-            var fileId = new CreatePdf().CreatePdfFile(model);
+            var fileId = new PdfService().CreatePdf(model);
 
-            _logger.Log(LogLevel.Information, $"==> fileId={fileId}");
+            _logger.Log(LogLevel.Information, $"==> Created fileId:{fileId}");
             return Ok(fileId);
         }
 
         [HttpGet("{id}", Name = "GetPdf")]
         public async Task<IActionResult> GetPdfAsync(string id)
         {
-            _logger.Log(LogLevel.Information, "==> ReadPdf called!");
+            _logger.Log(LogLevel.Information, "==> GetPdf called!");
 
-            var provider = new FileExtensionContentTypeProvider();
-            var filePath = $@".\pdfs\{id}.pdf";
-            if (!provider.TryGetContentType(filePath, out var contentType))
+            var file = await new PdfService().GetPdfAsync(id);
+
+            if (file != null)
             {
-                contentType = "application/octet-stream";
+                _logger.Log(LogLevel.Information, $"==> file {id} exist");
+                return File(file.FileContent, file.FileContentType, Path.GetFileName(file.FilePath));
             }
-
-            var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
-            return File(bytes, contentType, Path.GetFileName(filePath));
+            else
+            {
+                _logger.Log(LogLevel.Information, $"==> file {id} not found");
+                return NotFound();
+            }
         }
 
     }

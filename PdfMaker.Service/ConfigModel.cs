@@ -2,7 +2,7 @@
 
 namespace PdfMaker.Service
 {
-    public class ConfigSettings
+    public class ConfigModel
     {
         public IFormFile? TopView { get; set; }
         public IFormFile? LeftView { get; set; }

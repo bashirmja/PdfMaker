@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using MigraDocCore.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes;
 using PdfSharpCore;
 using PdfSharpCore.Drawing;
@@ -8,9 +9,28 @@ using System.Globalization;
 
 namespace PdfMaker.Service
 {
-    public class CreatePdf
+    public class PdfService
     {
-        public string CreatePdfFile(ConfigSettings model)
+        public async Task<PdfDto?> GetPdfAsync(string id)
+        {
+            var filePath = $@".\pdfs\{id}.pdf";
+
+            if (!File.Exists(filePath))
+            {
+                return null;
+            }
+            else
+            {
+                if (!new FileExtensionContentTypeProvider().TryGetContentType(filePath, out var contentType))
+                {
+                    contentType = "application/octet-stream";
+                }
+                var content = await File.ReadAllBytesAsync(filePath);
+                return PdfDto.CreateInstance(content, contentType, filePath);
+            }
+        }
+
+        public string CreatePdf(ConfigModel model)
         {
             var images = GetImages(model);
 
@@ -27,11 +47,10 @@ namespace PdfMaker.Service
 
             AddTextToPage(model.ProductTitle ?? "", gfx);
 
-
             return SaveNewdocument(document);
         }
 
-        private static List<MemoryStream> GetImages(ConfigSettings model)
+        private static List<MemoryStream> GetImages(ConfigModel model)
         {
             var uploadedfiles = new List<IFormFile>();
             if (model.TopView != null) uploadedfiles.Add(model.TopView);
@@ -85,5 +104,6 @@ namespace PdfMaker.Service
             var image = XImage.FromImageSource(ImageSource.FromStream(Guid.NewGuid().ToString("n").Substring(0, 8), () => pic));
             gfx.DrawImage(image, left, 100, 100, 100);
         }
+
     }
 }
