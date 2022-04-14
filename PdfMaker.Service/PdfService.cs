@@ -72,6 +72,7 @@ namespace PdfMaker.Service
             var baseTotal = 400;
             _documentService.AddTextToPage(model.TotalAreaTitle, gfx, XFontStyle.Bold, 50, baseTotal);
             _documentService.AddTextToPage(model.TotalAreaSize, gfx, XFontStyle.Regular, 150, baseTotal);
+            _documentService.AddFooter(gfx);
 
 
             return SaveDocument(document);
