@@ -1,4 +1,5 @@
-﻿using MigraDocCore.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes;
+﻿using Microsoft.AspNetCore.Http;
+using MigraDocCore.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes;
 using PdfSharpCore;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
@@ -9,23 +10,47 @@ namespace PdfMaker.Service
 {
     public class CreatePdf
     {
-        public string CreatePdfFile(string text, List<MemoryStream> pics)
+        public string CreatePdfFile(ConfigSettings model)
         {
-            PdfDocument document = CreateDocument();
+            var images = GetImages(model);
+
+            var document = CreateDocument();
             var page = document.AddPage();
             page.Orientation = PageOrientation.Landscape;
             var gfx = XGraphics.FromPdfPage(page);
 
 
-            for (int i = 0; i < pics.Count; i++)
+            for (int i = 0; i < images.Count; i++)
             {
-                AddPicturesToPage(pics[i], gfx, (i + 1) * 150);
+                AddPicturesToPage(images[i], gfx, (i + 1) * 150);
             }
 
-            AddTextToPage(text, gfx);
+            AddTextToPage(model.ProductTitle ?? "", gfx);
 
 
             return SaveNewdocument(document);
+        }
+
+        private static List<MemoryStream> GetImages(ConfigSettings model)
+        {
+            var uploadedfiles = new List<IFormFile>();
+            if (model.TopView != null) uploadedfiles.Add(model.TopView);
+            if (model.LeftView != null) uploadedfiles.Add(model.LeftView);
+            if (model.FrontView != null) uploadedfiles.Add(model.FrontView);
+
+            var images = new List<MemoryStream>();
+            foreach (var file in uploadedfiles)
+            {
+                if (file.Length > 0 && file.ContentType == "image/png")
+                {
+                    var ms = new MemoryStream();
+                    file.CopyTo(ms);
+                    ms.Position = 0;
+                    images.Add(ms);
+                }
+            }
+
+            return images;
         }
 
         private string SaveNewdocument(PdfDocument document)

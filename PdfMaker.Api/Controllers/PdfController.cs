@@ -16,28 +16,12 @@ namespace PdfMaker.Api.Controllers
         }
 
         [HttpPost("", Name = "CreatePdf")]
-        public IActionResult CreatePdf([FromForm] ConfigModel model)
+        public IActionResult CreatePdf([FromForm] ConfigSettings model)
         {
             _logger.Log(LogLevel.Information, "==> CreatePdf called!");
 
-            var uploadedfiles = new List<IFormFile>();
-            if (model.TopView != null) uploadedfiles.Add(model.TopView);
-            if (model.LeftView != null) uploadedfiles.Add(model.LeftView);
-            if (model.FrontView != null) uploadedfiles.Add(model.FrontView);
 
-            var streamImages = new List<MemoryStream>();
-            foreach (var file in uploadedfiles)
-            {
-                if (file.Length > 0 && file.ContentType == "image/png")
-                {
-                    var ms = new MemoryStream();
-                    file.CopyTo(ms);
-                    ms.Position = 0;
-                    streamImages.Add(ms);
-                }
-            }
-
-            var fileId = new CreatePdf().CreatePdfFile(model.Title ?? "", streamImages);
+            var fileId = new CreatePdf().CreatePdfFile(model);
 
             _logger.Log(LogLevel.Information, $"==> fileId={fileId}");
             return Ok(fileId);

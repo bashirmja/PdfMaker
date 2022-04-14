@@ -29,7 +29,7 @@ namespace PdfMaker.Test
 
 
             multipartFormContent.Add(new StringContent(DateTime.Now.ToString()), name: "Title");
-            multipartFormContent.Add(new StringContent("10"), name: "TotalFloors");
+            multipartFormContent.Add(new StringContent("COBOD Configurator"), name: "ProductTitle");
 
 
             var client = new HttpClient();
