@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.StaticFiles;
-using MigraDocCore.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes;
+﻿using Microsoft.AspNetCore.StaticFiles;
 using PdfSharpCore;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
-using SixLabors.ImageSharp.PixelFormats;
 using System.Globalization;
 
 namespace PdfMaker.Service
 {
     public class PdfService
     {
+        private readonly DocumentService _documentService = new DocumentService();
+
         public async Task<PdfDto?> GetPdfAsync(string id)
         {
             var filePath = $@".\pdfs\{id}.pdf";
@@ -32,47 +31,27 @@ namespace PdfMaker.Service
 
         public string CreatePdf(ConfigModel model)
         {
-            var images = GetImages(model);
-
             var document = CreateDocument();
+            var gfx = GetGfxFromDocument(document);
+
+
+            _documentService.AddPicturesToPage(model.FrontView, gfx, 100);
+            _documentService.AddPicturesToPage(model.LeftView, gfx, 300);
+            _documentService.AddPicturesToPage(model.TopView, gfx, 500);
+
+            _documentService.AddTextToPage(model.ProductTitle ?? "", gfx);
+
+            return SaveDocument(document);
+        }
+
+        private XGraphics GetGfxFromDocument(PdfDocument document)
+        {
             var page = document.AddPage();
             page.Orientation = PageOrientation.Landscape;
-            var gfx = XGraphics.FromPdfPage(page);
-
-
-            for (int i = 0; i < images.Count; i++)
-            {
-                AddPicturesToPage(images[i], gfx, (i + 1) * 150);
-            }
-
-            AddTextToPage(model.ProductTitle ?? "", gfx);
-
-            return SaveNewdocument(document);
+            return XGraphics.FromPdfPage(page);
         }
 
-        private static List<MemoryStream> GetImages(ConfigModel model)
-        {
-            var uploadedfiles = new List<IFormFile>();
-            if (model.TopView != null) uploadedfiles.Add(model.TopView);
-            if (model.LeftView != null) uploadedfiles.Add(model.LeftView);
-            if (model.FrontView != null) uploadedfiles.Add(model.FrontView);
-
-            var images = new List<MemoryStream>();
-            foreach (var file in uploadedfiles)
-            {
-                if (file.Length > 0 && file.ContentType == "image/png")
-                {
-                    var ms = new MemoryStream();
-                    file.CopyTo(ms);
-                    ms.Position = 0;
-                    images.Add(ms);
-                }
-            }
-
-            return images;
-        }
-
-        private string SaveNewdocument(PdfDocument document)
+        private string SaveDocument(PdfDocument document)
         {
             var fileId = Guid.NewGuid();
             var folderName = @".\pdfs";
@@ -91,19 +70,5 @@ namespace PdfMaker.Service
             document.Info.Subject = "Server time: " + document.Info.CreationDate.ToString("F", CultureInfo.InvariantCulture);
             return document;
         }
-
-        private void AddTextToPage(string test, XGraphics gfx)
-        {
-            var font = new XFont("Verdana", 20, XFontStyle.Bold);
-            gfx.DrawString(test, font, XBrushes.Black, new XRect(0, 0, 500, 1000), XStringFormats.Center);
-        }
-
-        private void AddPicturesToPage(MemoryStream pic, XGraphics gfx, int left)
-        {
-            ImageSource.ImageSourceImpl = new PdfSharpCore.Utils.ImageSharpImageSource<Rgba32>();
-            var image = XImage.FromImageSource(ImageSource.FromStream(Guid.NewGuid().ToString("n").Substring(0, 8), () => pic));
-            gfx.DrawImage(image, left, 100, 100, 100);
-        }
-
     }
 }
