@@ -13,20 +13,24 @@ namespace PdfMaker.Service
         public string? ConfigTitle { get; set; }
 
         public string? WidthTitle { get; set; }
-        public int WidthModules { get; set; }
-        public int WidthSize { get; set; }
+        public string? WidthModules { get; set; }
+        public string? WidthSize { get; set; }
 
         public string? LenghtTitle { get; set; }
-        public int LenghtModules { get; set; }
-        public int LenghtSize { get; set; }
+        public string? LenghtModules { get; set; }
+        public string? LenghtSize { get; set; }
 
         public string? HeightTitle { get; set; }
-        public int HeightModules { get; set; }
-        public int HeightSize { get; set; }
+        public string? HeightModules { get; set; }
+        public string? HeightSize { get; set; }
 
 
-        public int FloorCount { get; set; }
-        public int FloorArea { get; set; }
-        public int TotalArea { get; set; }
+        public string? FloorCount { get; set; }
+
+        public string? FloorAreaTitle { get; set; }
+        public string? FloorAreaSize { get; set; }
+
+        public string? TotalAreaTitle { get; set; }
+        public string? TotalAreaSize { get; set; }
     }
 }
