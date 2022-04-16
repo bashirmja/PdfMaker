@@ -23,7 +23,6 @@ namespace PdfMaker.Api.Controllers
         {
             _logger.Log(LogLevel.Information, "==> CreatePdf called!");
 
-
             var fileId = _pdfService.CreatePdf(model);
             return Ok(fileId);
         }
@@ -34,13 +33,13 @@ namespace PdfMaker.Api.Controllers
             _logger.Log(LogLevel.Information, "==> GetPdf called!");
 
             var pdf = await _pdfService.GetPdfAsync(id);
-            if (pdf != null)
+            if (pdf == null)
             {
-                return File(pdf.FileContent, pdf.FileContentType, Path.GetFileName(pdf.FilePath));
+                return NotFound();
             }
             else
             {
-                return NotFound();
+                return File(pdf, "application/pdf");
             }
         }
 

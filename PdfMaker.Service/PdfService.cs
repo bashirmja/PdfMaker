@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.StaticFiles;
-using PdfSharpCore;
+﻿using PdfSharpCore;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 using System.Globalization;
@@ -14,23 +13,13 @@ namespace PdfMaker.Service
             _documentService = documentService;
         }
 
-        public async Task<PdfDto?> GetPdfAsync(string id)
+        public async Task<byte[]?> GetPdfAsync(string id)
         {
             var filePath = $@"/pdfs/{id}.pdf";
 
-            if (!File.Exists(filePath))
-            {
-                return null;
-            }
-            else
-            {
-                if (!new FileExtensionContentTypeProvider().TryGetContentType(filePath, out var contentType))
-                {
-                    contentType = "application/octet-stream";
-                }
-                var content = await File.ReadAllBytesAsync(filePath);
-                return PdfDto.CreateInstance(content, contentType, filePath);
-            }
+            return File.Exists(filePath)
+                ? await File.ReadAllBytesAsync(filePath)
+                : null;
         }
 
         public string CreatePdf(ConfigModel model)
