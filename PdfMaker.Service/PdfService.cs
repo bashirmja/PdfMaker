@@ -16,7 +16,7 @@ namespace PdfMaker.Service
 
         public async Task<PdfDto?> GetPdfAsync(string id)
         {
-            var filePath = $@".\pdfs\{id}.pdf";
+            var filePath = $@"/pdfs/{id}.pdf";
 
             if (!File.Exists(filePath))
             {
@@ -88,8 +88,8 @@ namespace PdfMaker.Service
         private string SaveDocument(PdfDocument document)
         {
             var fileId = Guid.NewGuid();
-            var folderName = @".\pdfs";
-            var filepath = $@"{folderName}\{fileId}.pdf";
+            var folderName = @"/pdfs";
+            var filepath = $@"{folderName}/{fileId}.pdf";
 
             Directory.CreateDirectory(folderName);
             document.Save(filepath);
