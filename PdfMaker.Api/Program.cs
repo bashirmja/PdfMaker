@@ -11,7 +11,11 @@ builder.Services.AddScoped<DocumentService>();
 
 var app = builder.Build();
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "PDF Maker Apis");
+    c.RoutePrefix = "";
+});
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 app.UseAuthorization();
