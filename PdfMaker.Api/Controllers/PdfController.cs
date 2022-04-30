@@ -9,6 +9,7 @@ namespace PdfMaker.Api.Controllers
     {
         private readonly ILogger<PdfController> _logger;
         private readonly PdfService _pdfService;
+        private const string PdfStorageFolder = @"/pdfs";
 
         public PdfController(ILogger<PdfController> logger, PdfService pdfService)
         {
@@ -23,8 +24,13 @@ namespace PdfMaker.Api.Controllers
         {
             _logger.Log(LogLevel.Information, "==> CreatePdf called!");
 
-            var fileId = _pdfService.CreatePdf(model);
-            return Ok(fileId);
+            var document = _pdfService.CreatePdf(model);
+
+            var fileName = Guid.NewGuid().ToString();
+
+            _pdfService.SavePdf(document, PdfStorageFolder, fileName);
+
+            return Ok(fileName);
         }
 
         [HttpGet("{id}", Name = "GetPdf")]
@@ -32,15 +38,11 @@ namespace PdfMaker.Api.Controllers
         {
             _logger.Log(LogLevel.Information, "==> GetPdf called!");
 
-            var pdf = await _pdfService.GetPdfAsync(id);
-            if (pdf == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return File(pdf, "application/pdf");
-            }
+            var pdf = await _pdfService.GetPdfAsync(PdfStorageFolder, id);
+
+            return pdf == null
+                ? NotFound()
+                : File(pdf, "application/pdf");
         }
 
     }
