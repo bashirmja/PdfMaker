@@ -1,4 +1,7 @@
-﻿using PdfSharpCore.Pdf;
+﻿
+
+using MigraDoc.DocumentObjectModel;
+using MigraDoc.Rendering;
 
 namespace PdfMaker.Service
 {
@@ -19,17 +22,26 @@ namespace PdfMaker.Service
                 : null;
         }
 
-        public PdfDocument CreatePdf(ConfigModel model)
+        public Document CreatePdf(CreateModel model)
         {
             var document = _documentService.CreateDocument();
-            _documentService.FillDocument(document, model);
+            var section = _documentService.AddSection(document);
+            _documentService.AddHeader(section, model.HeaderHtmlContent);
+            _documentService.AddPictures(section, model.FormPictures);
+            _documentService.AddBody(section, model.BodyHtmlContent);
+            _documentService.AddFooter(section, model.FooterHtmlContent);
             return document;
         }
 
-        public void SavePdf(PdfDocument document, string path, string fileName)
+        public void SavePdf(Document document, string path, string fileName)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             Directory.CreateDirectory(path);
-            document.Save($@"{path}/{fileName}.pdf");
+
+            var pdfRenderer = new PdfDocumentRenderer(false);
+            pdfRenderer.Document = document;
+            pdfRenderer.RenderDocument();
+            pdfRenderer.PdfDocument.Save($@"{path}/{fileName}.pdf");
         }
 
     }

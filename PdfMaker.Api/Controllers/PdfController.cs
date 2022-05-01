@@ -11,7 +11,11 @@ namespace PdfMaker.Api.Controllers
         private readonly PdfService _pdfService;
         private const string PdfStorageFolder = @"/pdfs";
 
-        public PdfController(ILogger<PdfController> logger, PdfService pdfService)
+        public PdfController
+        (
+            ILogger<PdfController> logger,
+            PdfService pdfService
+        )
         {
             logger.LogInformation("==> PdfController called!");
 
@@ -20,7 +24,7 @@ namespace PdfMaker.Api.Controllers
         }
 
         [HttpPost("", Name = "CreatePdf")]
-        public IActionResult CreatePdf([FromForm] ConfigModel model)
+        public IActionResult CreatePdf([FromForm] CreateModel model)
         {
             _logger.Log(LogLevel.Information, "==> CreatePdf called!");
 
