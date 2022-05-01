@@ -362,6 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# Generated pdfs
-pdfs/
-/PdfMaker.Api/GeneratedPdfFiles
+# Generated file in the runtime
+GeneratedPdfFiles/
+ContactInfos/
+

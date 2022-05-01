@@ -26,8 +26,8 @@ namespace PdfMaker.Service
         {
             var document = _documentService.CreateDocument();
             var section = _documentService.AddSection(document);
-            _documentService.AddHeader(section, model.HeaderHtml,model.HeaderImage);
-            _documentService.AddBody(section, model.BodyHtml,model.BodyImages);
+            _documentService.AddHeader(section, model.HeaderHtml, model.HeaderImage);
+            _documentService.AddBody(section, model.BodyHtml, model.BodyImages);
             _documentService.AddFooter(section, model.FooterHtml, model.FooterImage);
             return document;
         }
@@ -40,7 +40,15 @@ namespace PdfMaker.Service
             var pdfRenderer = new PdfDocumentRenderer(false);
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
-            pdfRenderer.PdfDocument.Save($@"{path}/{fileName}.pdf");
+            pdfRenderer.PdfDocument.Save($@"{path}/{fileName}");
+        }
+
+        public void SaveContactInfo(string contactInfo, string path, string fileName)
+        {
+            Directory.CreateDirectory(path);
+
+            using var sw = File.AppendText($@"{path}/{fileName}");
+            sw.WriteLine(contactInfo);
         }
 
     }

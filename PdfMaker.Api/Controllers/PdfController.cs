@@ -10,6 +10,7 @@ namespace PdfMaker.Api.Controllers
         private readonly ILogger<PdfController> _logger;
         private readonly PdfService _pdfService;
         private const string PdfStorageFolder = @"./GeneratedPdfFiles/";
+        private const string ContactStorageFolder = @"./ContactInfos/";
 
         public PdfController
         (
@@ -32,7 +33,8 @@ namespace PdfMaker.Api.Controllers
 
             var fileName = Guid.NewGuid().ToString();
 
-            _pdfService.SavePdf(document, PdfStorageFolder, fileName);
+            _pdfService.SavePdf(document, PdfStorageFolder, fileName + ".pdf");
+            _pdfService.SaveContactInfo(model.ContactInfo ?? "", ContactStorageFolder, "contacs.txt");
 
             return Ok(fileName);
         }

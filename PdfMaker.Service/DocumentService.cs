@@ -38,12 +38,14 @@ namespace PdfMaker.Service
             beforSpaceParagraph.AddLineBreak();
             beforSpaceParagraph.AddLineBreak();
 
-            var imagesParagraph = section.AddParagraph();
-            foreach (var image in images)
+            if (images != null)
             {
-                AddImageToParagraphHelper(image, imagesParagraph);
+                var imagesParagraph = section.AddParagraph();
+                foreach (var image in images)
+                {
+                    AddImageToParagraphHelper(image, imagesParagraph);
+                }
             }
-
 
             var htmlParagheraph = section.AddParagraph();
             htmlParagheraph.AddLineBreak();
@@ -61,9 +63,8 @@ namespace PdfMaker.Service
 
             AddHtmlToParagraphHelper(html, htmlParagheraph);
             AddImageToParagraphHelper(image, imageParageraph);
-
-
         }
+
         private void AddImageToParagraphHelper(IFormFile? image, Paragraph paragraph)
         {
             if (image != null && image.Length > 0)

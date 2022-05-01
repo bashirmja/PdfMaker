@@ -12,5 +12,7 @@ namespace PdfMaker.Service
 
         public string? FooterHtml { get; set; }
         public IFormFile? FooterImage { get; set; }
+
+        public string? ContactInfo { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace PdfMaker.Test
             var redFile = new StreamContent(File.OpenRead("./files/red.png"));
             redFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
             multipartFormContent.Add(redFile, name: "BodyImages", fileName: "red.png");
-            
+
             var blueFile = new StreamContent(File.OpenRead("./files/blue.png"));
             blueFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
             multipartFormContent.Add(blueFile, name: "BodyImages", fileName: "blue.png");
@@ -42,6 +42,8 @@ namespace PdfMaker.Test
             var footerFile = new StreamContent(File.OpenRead("./files/footer.png"));
             footerFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
             multipartFormContent.Add(footerFile, name: "FooterImage", fileName: "footer.png");
+
+            multipartFormContent.Add(new StringContent("{'name':'John', 'age':30, 'car':null}"), name: "ContactInfo");
 
             var client = new HttpClient();
             var baseAddress = "https://localhost:7131";
