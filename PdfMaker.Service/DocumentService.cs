@@ -21,7 +21,7 @@ namespace PdfMaker.Service
         }
         public void AddHeader(Section section, string? headerHtmlContent)
         {
-            var paragraph = section.AddParagraph();
+            var paragraph = section.Headers.Primary.AddParagraph();
             ParsHtmlStringToAddToParagraph(headerHtmlContent ?? "", paragraph);
 
         }
@@ -50,7 +50,7 @@ namespace PdfMaker.Service
 
         public void AddFooter(Section section, string? footerHtmlContent)
         {
-            var paragraph = section.AddParagraph();
+            var paragraph = section.Footers.Primary.AddParagraph();
             ParsHtmlStringToAddToParagraph(footerHtmlContent ?? "", paragraph);
         }
 
@@ -58,24 +58,33 @@ namespace PdfMaker.Service
         private void ParsHtmlStringToAddToParagraph(string htmlstring, Paragraph paragraph)
         {
 
-            var lines = htmlstring.Split("<br/>");
-
-            foreach (var line in lines)
+            var pTagMatches = Regex.Matches(htmlstring, @"<(p|P)>.*?</(p|P)>");
+            foreach (Match pTagMatch in pTagMatches)
             {
+                var pTagValue = Regex.Match(pTagMatch.Value, "(?<=<(p|P)>).*?(?=</(p|P)>)").Value;
+                var lines = pTagValue.Split("<br/>");
 
-                var matches = Regex.Matches(line, @"(<\w+>.*?</\w+>)");
-
-                foreach (Match match in matches)
+                foreach (var line in lines)
                 {
-                    paragraph.AddText(match.Index + ")" + match.Value);
-                    paragraph.AddLineBreak();
+
+                    var boldlineEndParts = line.Split("</b>");
+                    foreach (var boldlineEndPart in boldlineEndParts)
+                    {
+                        if (!boldlineEndPart.Contains("<b>"))
+                        {
+                            paragraph.AddText(boldlineEndPart);
+                            continue;
+                        }
+
+                        var boldlineStartParts = boldlineEndPart.Split("<b>");
+
+                        paragraph.AddText(boldlineStartParts[0]);
+                        paragraph.AddFormattedText(boldlineStartParts[1].Replace("</b>", ""), TextFormat.Bold);
+                    }
+                        paragraph.AddLineBreak();
                 }
 
-                paragraph.AddLineBreak();
-                paragraph.AddLineBreak();
-                paragraph.AddLineBreak();
             }
-
         }
     }
 }

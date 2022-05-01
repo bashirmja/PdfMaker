@@ -14,45 +14,17 @@ namespace PdfMaker.Test
         public async Task CreatePDFAsync()
         {
             using var multipartFormContent = new MultipartFormDataContent();
-            var pngHeader = new MediaTypeHeaderValue("image/png");
-
-            var blueFile = new StreamContent(File.OpenRead("./files/blue.png"));
-            blueFile.Headers.ContentType = pngHeader;
 
             var redFile = new StreamContent(File.OpenRead("./files/red.png"));
-            redFile.Headers.ContentType = pngHeader;
+            redFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
 
-            var greenFile = new StreamContent(File.OpenRead("./files/green.png"));
-            greenFile.Headers.ContentType = pngHeader;
+            multipartFormContent.Add(redFile, name: "FormPictures", fileName: "red.png");
 
-            var logoFile = new StreamContent(File.OpenRead("./files/logo.png"));
-            logoFile.Headers.ContentType = pngHeader;
-
-            multipartFormContent.Add(redFile, name: "LeftView", fileName: "red.png");
-            multipartFormContent.Add(blueFile, name: "FrontView", fileName: "blue.png");
-            multipartFormContent.Add(greenFile, name: "TopView", fileName: "green.png");
-            multipartFormContent.Add(logoFile, name: "CompanyLogo", fileName: "logo.png");
-
-            multipartFormContent.Add(new StringContent("COBOD Configurator"), name: "ProductTitle");
-            multipartFormContent.Add(new StringContent("BOD2 4-8-2"), name: "ConfigTitle");
-
-            multipartFormContent.Add(new StringContent("Width(X)"), name: "WidthTitle");
-            multipartFormContent.Add(new StringContent("4 Modules"), name: "WidthModules");
-            multipartFormContent.Add(new StringContent("9.6m"), name: "WidthSize");
-
-            multipartFormContent.Add(new StringContent("Lenght(Y)"), name: "LenghtTitle");
-            multipartFormContent.Add(new StringContent("8 Modules"), name: "LenghtModules");
-            multipartFormContent.Add(new StringContent("19.1m"), name: "LenghtSize");
-
-            multipartFormContent.Add(new StringContent("Height(Z)"), name: "HeightTitle");
-            multipartFormContent.Add(new StringContent("2 Modules"), name: "HeightModules");
-            multipartFormContent.Add(new StringContent("3.5m"), name: "HeightSize");
-
-            multipartFormContent.Add(new StringContent("1 Floor"), name: "FloorCount");
-            multipartFormContent.Add(new StringContent("Floor Area"), name: "FloorAreaTitle");
-            multipartFormContent.Add(new StringContent("183m2"), name: "FloorAreaSize");
-            multipartFormContent.Add(new StringContent("Total Area"), name: "TotalAreatitle");
-            multipartFormContent.Add(new StringContent("183m2"), name: "TotalAreaSize");
+            multipartFormContent.Add(new StringContent("<p>this is <b>Header</b><br/>subheader</p>"), name: "HeaderHtmlContent");
+            multipartFormContent.Add(new StringContent(
+                "<p>this is text1 <b>bold1</b>text1<br/>this is text2 <b>bold1</b>text2</p>" +
+                "<p>this is text5 <b>bold1</b>text1<br/>this is text5 <b>bold5</b>text5</p>"), name: "BodyHtmlContent");
+            multipartFormContent.Add(new StringContent("<p>sdfgsdfg<b>footer</b>sdgdg<br/>sghfgh<b>subfooter</b>gdhsgh</P>"), name: "FooterHtmlContent");
 
             var client = new HttpClient();
             var baseAddress = "https://localhost:7131";
