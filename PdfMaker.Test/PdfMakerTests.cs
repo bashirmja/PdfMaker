@@ -17,8 +17,12 @@ namespace PdfMaker.Test
 
             var redFile = new StreamContent(File.OpenRead("./files/red.png"));
             redFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-
             multipartFormContent.Add(redFile, name: "FormPictures", fileName: "red.png");
+            
+            var blueFile = new StreamContent(File.OpenRead("./files/blue.png"));
+            blueFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            multipartFormContent.Add(blueFile, name: "FormPictures", fileName: "blue.png");
+
 
             multipartFormContent.Add(new StringContent("<p>this is <b>Header</b><br/>subheader</p>"), name: "HeaderHtmlContent");
             multipartFormContent.Add(new StringContent(
