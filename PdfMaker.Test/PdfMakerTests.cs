@@ -15,20 +15,33 @@ namespace PdfMaker.Test
         {
             using var multipartFormContent = new MultipartFormDataContent();
 
+            multipartFormContent.Add(new StringContent("<p>this is <b>Header</b><br/>subheader</p>"), name: "HeaderHtml");
+
+            var logoFile = new StreamContent(File.OpenRead("./files/logo.png"));
+            logoFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            multipartFormContent.Add(logoFile, name: "HeaderImage", fileName: "logo.png");
+
+            multipartFormContent.Add(new StringContent(
+                "<p>this is text1 <b>bold1</b>text1<br/>this is text2 <b>bold1</b>text2</p>" +
+                "<p>this is text5 <b>bold1</b>text1<br/>this is text5 <b>bold5</b>text5</p>"), name: "BodyHtml");
+
             var redFile = new StreamContent(File.OpenRead("./files/red.png"));
             redFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-            multipartFormContent.Add(redFile, name: "FormPictures", fileName: "red.png");
+            multipartFormContent.Add(redFile, name: "BodyImages", fileName: "red.png");
             
             var blueFile = new StreamContent(File.OpenRead("./files/blue.png"));
             blueFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-            multipartFormContent.Add(blueFile, name: "FormPictures", fileName: "blue.png");
+            multipartFormContent.Add(blueFile, name: "BodyImages", fileName: "blue.png");
+
+            var greenFile = new StreamContent(File.OpenRead("./files/green.png"));
+            greenFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            multipartFormContent.Add(greenFile, name: "BodyImages", fileName: "green.png");
 
 
-            multipartFormContent.Add(new StringContent("<p>this is <b>Header</b><br/>subheader</p>"), name: "HeaderHtmlContent");
-            multipartFormContent.Add(new StringContent(
-                "<p>this is text1 <b>bold1</b>text1<br/>this is text2 <b>bold1</b>text2</p>" +
-                "<p>this is text5 <b>bold1</b>text1<br/>this is text5 <b>bold5</b>text5</p>"), name: "BodyHtmlContent");
-            multipartFormContent.Add(new StringContent("<p>sdfgsdfg<b>footer</b>sdgdg<br/>sghfgh<b>subfooter</b>gdhsgh</P>"), name: "FooterHtmlContent");
+            multipartFormContent.Add(new StringContent("<p>sdfgsdfg<b>footer</b>sdgdg<br/>sghfgh<b>subfooter</b>gdhsgh</P>"), name: "FooterHtml");
+            var footerFile = new StreamContent(File.OpenRead("./files/footer.png"));
+            footerFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            multipartFormContent.Add(footerFile, name: "FooterImage", fileName: "footer.png");
 
             var client = new HttpClient();
             var baseAddress = "https://localhost:7131";

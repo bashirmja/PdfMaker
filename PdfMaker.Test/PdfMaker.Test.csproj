@@ -24,6 +24,9 @@
     <None Update="files\blue.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="files\footer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="files\green.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

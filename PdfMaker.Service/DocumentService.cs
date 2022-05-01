@@ -19,36 +19,71 @@ namespace PdfMaker.Service
             var section = document.AddSection();
             return section;
         }
-        public void AddHeader(Section section, string? headerHtmlContent)
+
+        public void AddHeader(Section section, string? html, IFormFile? image)
         {
-            section.Headers.Primary.AddParagraph().AddHtml(headerHtmlContent);
+            var imageParageraph = section.Headers.Primary.AddParagraph();
+            imageParageraph.Format.Alignment = ParagraphAlignment.Right;
+
+            var htmlParagheraph = section.AddParagraph();
+            htmlParagheraph.Format.Alignment = ParagraphAlignment.Center;
+
+            AddImageToParagraphHelper(image, imageParageraph);
+            AddHtmlToParagraphHelper(html, htmlParagheraph);
         }
 
-        public void AddPictures(Section section, IFormFile[]? formPictures)
+        public void AddBody(Section section, string? html, IFormFile[]? images)
         {
-            var paragraph = section.AddParagraph();
-            foreach (var picture in formPictures)
+            var beforSpaceParagraph = section.AddParagraph();
+            beforSpaceParagraph.AddLineBreak();
+            beforSpaceParagraph.AddLineBreak();
+
+            var imagesParagraph = section.AddParagraph();
+            foreach (var image in images)
             {
-                if (picture != null && picture.Length > 0 && picture.ContentType == "image/png")
-                {
-                    var ms = new MemoryStream();
-                    picture.CopyTo(ms);
-                    ms.Position = 0;
-                    paragraph.AddImage("base64:" + Convert.ToBase64String(ms.ToArray()));
-                }
+                AddImageToParagraphHelper(image, imagesParagraph);
             }
 
+
+            var htmlParagheraph = section.AddParagraph();
+            htmlParagheraph.AddLineBreak();
+
+            AddHtmlToParagraphHelper(html, htmlParagheraph);
         }
 
-        public void AddBody(Section section, string? bodyHtmlContent)
+        public void AddFooter(Section section, string? html, IFormFile? image)
         {
-            section.AddParagraph().AddHtml(bodyHtmlContent);
+            var htmlParagheraph = section.Footers.Primary.AddParagraph();
+
+            var imageParageraph = section.Footers.Primary.AddParagraph();
+            imageParageraph.Format.Alignment = ParagraphAlignment.Right;
+
+
+            AddHtmlToParagraphHelper(html, htmlParagheraph);
+            AddImageToParagraphHelper(image, imageParageraph);
+
+
+        }
+        private void AddImageToParagraphHelper(IFormFile? image, Paragraph paragraph)
+        {
+            if (image != null && image.Length > 0)
+            {
+                var ms = new MemoryStream();
+                image.CopyTo(ms);
+                ms.Position = 0;
+                var readyImage = "base64:" + Convert.ToBase64String(ms.ToArray());
+                paragraph.AddImage(readyImage);
+                paragraph.AddText("        ");
+            }
         }
 
-        public void AddFooter(Section section, string? footerHtmlContent)
+        private void AddHtmlToParagraphHelper(string? html, Paragraph paragraph)
         {
-            section.Footers.Primary.AddParagraph().AddHtml(footerHtmlContent);
+            if (!string.IsNullOrEmpty(html))
+            {
+                paragraph.AddHtml(html);
+            }
         }
-                
+
     }
 }

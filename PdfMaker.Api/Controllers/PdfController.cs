@@ -9,7 +9,7 @@ namespace PdfMaker.Api.Controllers
     {
         private readonly ILogger<PdfController> _logger;
         private readonly PdfService _pdfService;
-        private const string PdfStorageFolder = @"/pdfs";
+        private const string PdfStorageFolder = @"./GeneratedPdfFiles/";
 
         public PdfController
         (
