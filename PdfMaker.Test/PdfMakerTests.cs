@@ -15,15 +15,17 @@ namespace PdfMaker.Test
         {
             using var multipartFormContent = new MultipartFormDataContent();
 
-            multipartFormContent.Add(new StringContent("<p>this is <b>Header</b><br/>subheader</p>"), name: "HeaderHtml");
+            multipartFormContent.Add(new StringContent("<h1>This is<h1>dfdf <b>Header</b><br/>subheader"), name: "HeaderHtml");
 
             var logoFile = new StreamContent(File.OpenRead("./files/logo.png"));
             logoFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
             multipartFormContent.Add(logoFile, name: "HeaderImage", fileName: "logo.png");
 
             multipartFormContent.Add(new StringContent(
-                "<p>this is text1 <b>bold1</b>text1<br/>this is text2 <b>bold1</b>text2</p>" +
-                "<p>this is text5 <b>bold1</b>text1<br/>this is text5 <b>bold5</b>text5</p>"), name: "BodyHtml");
+                "this is text1 text1 <b>-1</b><br/>" +
+                "this is text2 bold1<b>-2</b><br/>" +
+                "text2 this is text5 text1<b>-3</b><br/>" +
+                "this is text5 bold5text5<b>-4</b>"), name: "BodyHtml");
 
             var redFile = new StreamContent(File.OpenRead("./files/red.png"));
             redFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
@@ -38,7 +40,7 @@ namespace PdfMaker.Test
             multipartFormContent.Add(greenFile, name: "BodyImages", fileName: "green.png");
 
 
-            multipartFormContent.Add(new StringContent("<p>sdfgsdfg<b>footer</b>sdgdg<br/>sghfgh<b>subfooter</b>gdhsgh</P>"), name: "FooterHtml");
+            multipartFormContent.Add(new StringContent($"{DateTime.Now}"), name: "FooterHtml");
             var footerFile = new StreamContent(File.OpenRead("./files/footer.png"));
             footerFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
             multipartFormContent.Add(footerFile, name: "FooterImage", fileName: "footer.png");

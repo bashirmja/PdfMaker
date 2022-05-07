@@ -17,19 +17,25 @@ namespace PdfMaker.Service
         public Section AddSection(Document document)
         {
             var section = document.AddSection();
+            var margin = (Unit)"0.7in";
+            section.PageSetup = document.DefaultPageSetup.Clone();
+            section.PageSetup.TopMargin = margin;
+            section.PageSetup.BottomMargin = margin;
+            section.PageSetup.LeftMargin = margin;
+            section.PageSetup.RightMargin = margin;
             return section;
         }
 
         public void AddHeader(Section section, string? html, IFormFile? image)
         {
-            var imageParageraph = section.Headers.Primary.AddParagraph();
-            imageParageraph.Format.Alignment = ParagraphAlignment.Right;
+            var HeaderImageParageraph = section.Headers.Primary.AddParagraph();
+            HeaderImageParageraph.Format.Alignment = ParagraphAlignment.Right;
 
-            var htmlParagheraph = section.AddParagraph();
-            htmlParagheraph.Format.Alignment = ParagraphAlignment.Center;
+            var HeaderHtmlParagheraph = section.AddParagraph();
+            HeaderHtmlParagheraph.Format.Alignment = ParagraphAlignment.Center;
 
-            AddImageToParagraphHelper(image, imageParageraph);
-            AddHtmlToParagraphHelper(html, htmlParagheraph);
+            AddImageToParagraphHelper(image, HeaderImageParageraph);
+            AddHtmlToParagraphHelper(html, HeaderHtmlParagheraph);
         }
 
         public void AddBody(Section section, string? html, IFormFile[]? images)
@@ -41,9 +47,9 @@ namespace PdfMaker.Service
             if (images != null)
             {
                 var imagesParagraph = section.AddParagraph();
-                foreach (var image in images)
+                for (int i = 0; i < images.Length; i++)
                 {
-                    AddImageToParagraphHelper(image, imagesParagraph);
+                    AddImageToParagraphHelper(images[i], imagesParagraph, images.Length - 1 != i ? 5 : 0);
                 }
             }
 
@@ -55,17 +61,18 @@ namespace PdfMaker.Service
 
         public void AddFooter(Section section, string? html, IFormFile? image)
         {
-            var htmlParagheraph = section.Footers.Primary.AddParagraph();
 
-            var imageParageraph = section.Footers.Primary.AddParagraph();
-            imageParageraph.Format.Alignment = ParagraphAlignment.Right;
+            var footerImageParageraph = section.Footers.Primary.AddParagraph();
+            footerImageParageraph.Format.Alignment = ParagraphAlignment.Right;
 
+            var footerHtmlParagheraph = section.Footers.Primary.AddParagraph();
+            footerHtmlParagheraph.Format.Alignment = ParagraphAlignment.Right;
 
-            AddHtmlToParagraphHelper(html, htmlParagheraph);
-            AddImageToParagraphHelper(image, imageParageraph);
+            AddHtmlToParagraphHelper(html, footerHtmlParagheraph);
+            AddImageToParagraphHelper(image, footerImageParageraph);
         }
 
-        private void AddImageToParagraphHelper(IFormFile? image, Paragraph paragraph)
+        private void AddImageToParagraphHelper(IFormFile? image, Paragraph paragraph, int spaceAfter = 0)
         {
             if (image != null && image.Length > 0)
             {
@@ -74,7 +81,7 @@ namespace PdfMaker.Service
                 ms.Position = 0;
                 var readyImage = "base64:" + Convert.ToBase64String(ms.ToArray());
                 paragraph.AddImage(readyImage);
-                paragraph.AddText("        ");
+                paragraph.AddText(new string(' ', spaceAfter));
             }
         }
 
