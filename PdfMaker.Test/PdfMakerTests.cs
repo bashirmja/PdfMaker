@@ -15,7 +15,7 @@ namespace PdfMaker.Test
         {
             using var multipartFormContent = new MultipartFormDataContent();
 
-            multipartFormContent.Add(new StringContent("<h1>This is<h1>dfdf <b>Header</b><br/>subheader"), name: "HeaderHtml");
+            multipartFormContent.Add(new StringContent("This <b>Header</b> is on top <br/>subheader"), name: "HeaderHtml");
 
             var logoFile = new StreamContent(File.OpenRead("./files/logo.png"));
             logoFile.Headers.ContentType = new MediaTypeHeaderValue("image/png");
@@ -48,6 +48,7 @@ namespace PdfMaker.Test
             multipartFormContent.Add(new StringContent("{'name':'John', 'age':30, 'car':null}"), name: "ContactInfo");
 
             var client = new HttpClient();
+            //var baseAddress = "https://xx.azurewebsites.net";
             var baseAddress = "https://localhost:7131";
             client.BaseAddress = new Uri(baseAddress);
 

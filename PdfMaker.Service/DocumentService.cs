@@ -17,12 +17,14 @@ namespace PdfMaker.Service
         public Section AddSection(Document document)
         {
             var section = document.AddSection();
-            var margin = (Unit)"0.7in";
             section.PageSetup = document.DefaultPageSetup.Clone();
-            section.PageSetup.TopMargin = margin;
-            section.PageSetup.BottomMargin = margin;
-            section.PageSetup.LeftMargin = margin;
-            section.PageSetup.RightMargin = margin;
+
+            section.PageSetup.HeaderDistance = "5mm";
+            section.PageSetup.FooterDistance = "5mm";
+            section.PageSetup.TopMargin = "25mm";
+            section.PageSetup.BottomMargin = "25mm";
+            section.PageSetup.LeftMargin = "15mm";
+            section.PageSetup.RightMargin = "15mm";
             return section;
         }
 
@@ -49,7 +51,7 @@ namespace PdfMaker.Service
                 var imagesParagraph = section.AddParagraph();
                 for (int i = 0; i < images.Length; i++)
                 {
-                    AddImageToParagraphHelper(images[i], imagesParagraph, images.Length - 1 != i ? 5 : 0);
+                    AddImageToParagraphHelper(images[i], imagesParagraph, images.Length - 1 != i ? 10 : 0);
                 }
             }
 
@@ -68,8 +70,8 @@ namespace PdfMaker.Service
             var footerHtmlParagheraph = section.Footers.Primary.AddParagraph();
             footerHtmlParagheraph.Format.Alignment = ParagraphAlignment.Right;
 
-            AddHtmlToParagraphHelper(html, footerHtmlParagheraph);
             AddImageToParagraphHelper(image, footerImageParageraph);
+            AddHtmlToParagraphHelper(html, footerHtmlParagheraph);
         }
 
         private void AddImageToParagraphHelper(IFormFile? image, Paragraph paragraph, int spaceAfter = 0)
