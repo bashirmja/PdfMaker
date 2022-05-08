@@ -29,6 +29,8 @@ namespace PdfMaker.Api.Controllers
         {
             _logger.Log(LogLevel.Information, "==> CreatePdf called!");
 
+            model.HtmlStyles = System.Text.Json.JsonSerializer.Deserialize<HtmlStyle[]>(Request.Form["HtmlStyles"]);
+
             var document = _pdfService.CreatePdf(model);
 
             var fileName = Guid.NewGuid().ToString();

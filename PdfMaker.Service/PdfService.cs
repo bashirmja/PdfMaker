@@ -26,6 +26,7 @@ namespace PdfMaker.Service
         {
             var document = _documentService.CreateDocument();
             var section = _documentService.AddSection(document);
+            _documentService.AddStyles(document, model.HtmlStyles);
             _documentService.AddHeader(section, model.HeaderHtml, model.HeaderImage);
             _documentService.AddBody(section, model.BodyHtml, model.BodyImages);
             _documentService.AddFooter(section, model.FooterHtml, model.FooterImage);
