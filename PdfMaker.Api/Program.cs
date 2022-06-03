@@ -13,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<PdfService>();
 builder.Services.AddScoped<DocumentService>();
+builder.Services.AddScoped<ParagraphService>();
 
 var app = builder.Build();
 app.UseSwagger();

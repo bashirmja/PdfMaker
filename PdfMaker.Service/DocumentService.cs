@@ -6,6 +6,13 @@ namespace PdfMaker.Service
 {
     public class DocumentService
     {
+        private readonly ParagraphService _paragraphService;
+
+        public DocumentService(ParagraphService paragraphService)
+        {
+            _paragraphService = paragraphService;
+        }
+
         public Document CreateDocument(string? title = "", string? author = "", string? subject = "")
         {
             var document = new Document();
@@ -77,13 +84,13 @@ namespace PdfMaker.Service
             var HeaderImageParageraph = section.Headers.Primary.AddParagraph();
             HeaderImageParageraph.Format.Alignment = ParagraphAlignment.Right;
 
-            AddImageToParagraphHelper(image, HeaderImageParageraph);
+            _paragraphService.AddImageToParagraphHelper(image, HeaderImageParageraph);
 
             foreach (var p in (html ?? "").Split("<br/>"))
             {
                 var HeaderHtmlParagheraph = section.Headers.Primary.AddParagraph();
                 HeaderHtmlParagheraph.Format.Alignment = ParagraphAlignment.Center;
-                AddHtmlToParagraphHelper(p, HeaderHtmlParagheraph);
+                _paragraphService.AddHtmlToParagraphHelper(p, HeaderHtmlParagheraph);
             }
         }
 
@@ -98,14 +105,14 @@ namespace PdfMaker.Service
                 var imagesParagraph = section.AddParagraph();
                 for (int i = 0; i < images.Length; i++)
                 {
-                    AddImageToParagraphHelper(images[i], imagesParagraph, images.Length - 1 != i ? 10 : 0);
+                    _paragraphService.AddImageToParagraphHelper(images[i], imagesParagraph, images.Length - 1 != i ? 10 : 0);
                 }
             }
 
             foreach (var p in (html ?? "").Split("<br/>"))
             {
                 var htmlParagheraph = section.AddParagraph();
-                AddHtmlToParagraphHelper(p, htmlParagheraph);
+                _paragraphService.AddHtmlToParagraphHelper(p, htmlParagheraph);
             }
 
 
@@ -119,37 +126,17 @@ namespace PdfMaker.Service
 
 
 
-            AddImageToParagraphHelper(image, footerImageParageraph);
+            _paragraphService.AddImageToParagraphHelper(image, footerImageParageraph);
 
             foreach (var p in (html ?? "").Split("<br/>"))
             {
                 var footerHtmlParagheraph = section.Footers.Primary.AddParagraph();
                 footerHtmlParagheraph.Format.Alignment = ParagraphAlignment.Right;
-                AddHtmlToParagraphHelper(p, footerHtmlParagheraph);
+                _paragraphService.AddHtmlToParagraphHelper(p, footerHtmlParagheraph);
             }
 
         }
 
-        private void AddImageToParagraphHelper(IFormFile? image, Paragraph paragraph, int spaceAfter = 0)
-        {
-            if (image != null && image.Length > 0)
-            {
-                var ms = new MemoryStream();
-                image.CopyTo(ms);
-                ms.Position = 0;
-                var readyImage = "base64:" + Convert.ToBase64String(ms.ToArray());
-                paragraph.AddImage(readyImage);
-                paragraph.AddText(new string(' ', spaceAfter));
-            }
-        }
-
-        private void AddHtmlToParagraphHelper(string? html, Paragraph paragraph)
-        {
-            if (!string.IsNullOrEmpty(html))
-            {
-                paragraph.AddHtml(html);
-            }
-        }
 
     }
 }
