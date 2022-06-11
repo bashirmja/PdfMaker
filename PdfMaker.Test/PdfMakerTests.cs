@@ -107,10 +107,10 @@ namespace PdfMaker.Test
             //var baseAddress = "https://xx.azurewebsites.net";
             var baseAddress = "https://localhost:7131";
             client.BaseAddress = new Uri(baseAddress);
-            var postResponse = await client.PostAsync("/pdf", form);
+            var postResponse = await client.PostAsync("api/pdf", form);
             string fileId = await postResponse.Content.ReadAsStringAsync();
 
-            Process.Start(new ProcessStartInfo(baseAddress + "/pdf/" + fileId) { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo(baseAddress + "/api/pdf/" + fileId) { UseShellExecute = true });
 
             Assert.NotEmpty(fileId);
         }

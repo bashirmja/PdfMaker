@@ -4,7 +4,7 @@ using PdfMaker.Service;
 namespace PdfMaker.Api.Controllers
 {
     [ApiController]
-    [Route("/pdf")]
+    [Route("api/pdf")]
     public class PdfController : ControllerBase
     {
         private readonly ILogger<PdfController> _logger;
