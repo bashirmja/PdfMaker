@@ -124,8 +124,14 @@ namespace PdfMaker.Service
         {
             var footerImageParageraph = section.Footers.Primary.AddParagraph();
             footerImageParageraph.Format.Alignment = ParagraphAlignment.Right;
-
             _paragraphService.AddImageToParagraphHelper(image, footerImageParageraph);
+
+            var pageNumberParageraph = section.Footers.Primary.AddParagraph();
+            pageNumberParageraph.Format.Alignment = ParagraphAlignment.Right;
+            pageNumberParageraph.AddText("Page ");
+            pageNumberParageraph.AddPageField();
+            pageNumberParageraph.AddText(" of ");
+            pageNumberParageraph.AddNumPagesField();
 
             foreach (var p in (html ?? "").Split("<br/>"))
             {
