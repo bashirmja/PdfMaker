@@ -104,7 +104,7 @@ namespace PdfMaker.Test
             form.Add(new StringContent(System.Text.Json.JsonSerializer.Serialize(new[] { NormalStyle, footerStyle, headerStyle, h1Style, h2Style })), name: "HtmlStyles");
 
             var client = new HttpClient();
-            //var baseAddress = "https://xx.azurewebsites.net";
+            //var baseAddress = "https://cobodpdfmakerapi.azurewebsites.net";
             var baseAddress = "https://localhost:7131";
             client.BaseAddress = new Uri(baseAddress);
             var postResponse = await client.PostAsync("api/pdf", form);
