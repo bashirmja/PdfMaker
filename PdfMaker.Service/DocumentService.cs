@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MigraDoc.DocumentObjectModel;
-using MigraDoc.Extensions.Html;
 
 namespace PdfMaker.Service
 {
@@ -98,33 +97,33 @@ namespace PdfMaker.Service
         {
             var beforSpaceParagraph = section.AddParagraph();
             beforSpaceParagraph.AddLineBreak();
-            beforSpaceParagraph.AddLineBreak();
 
-            if (images != null)
+            foreach (var p in html!.Split("<br/>"))
             {
-                var imagesParagraph = section.AddParagraph();
-                for (int i = 0; i < images.Length; i++)
+                var paragheraph = section.AddParagraph();
+
+                foreach (var paragPart in p.Split("<img>"))
                 {
-                    _paragraphService.AddImageToParagraphHelper(images[i], imagesParagraph, images.Length - 1 != i ? 10 : 0);
+                    if (paragPart.Contains("</img>"))
+                    {
+                        var imgLines = paragPart.Split("</img>");
+                        var img = images!.FirstOrDefault(x => x.FileName == imgLines[0]);
+
+                        _paragraphService.AddImageToParagraphHelper(img, paragheraph);
+                        _paragraphService.AddHtmlToParagraphHelper(imgLines[1], paragheraph);
+                    }
+                    else
+                    {
+                        _paragraphService.AddHtmlToParagraphHelper(paragPart, paragheraph);
+                    }
                 }
             }
-
-            foreach (var p in (html ?? "").Split("<br/>"))
-            {
-                var htmlParagheraph = section.AddParagraph();
-                _paragraphService.AddHtmlToParagraphHelper(p, htmlParagheraph);
-            }
-
-
         }
 
         public void AddFooter(Section section, string? html, IFormFile? image)
         {
-
             var footerImageParageraph = section.Footers.Primary.AddParagraph();
             footerImageParageraph.Format.Alignment = ParagraphAlignment.Right;
-
-
 
             _paragraphService.AddImageToParagraphHelper(image, footerImageParageraph);
 
@@ -136,7 +135,6 @@ namespace PdfMaker.Service
             }
 
         }
-
 
     }
 }

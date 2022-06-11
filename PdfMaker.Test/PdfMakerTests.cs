@@ -45,6 +45,11 @@ namespace PdfMaker.Test
                 "<h3> This is heading 3 </h3><br/>" +
                 "<h4> This is heading 4 </h4><br/>" +
                 "<h5> This is heading 5 </h5><br/>" +
+                "text1<br/>" +
+                "<img>green.png</img><br/>" +
+                "text2<br/>" +
+                "<img>blue.png</img><br/>" +
+                "text3<br/>" +
                 "<h6> This is heading 6 </h6><br/>"), name: "BodyHtml");
 
             var h1Style = new
